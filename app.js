@@ -1,5 +1,7 @@
 const express = require('express');
 
+require('./api/utils/db').connect();
+
 const app = express();
 
 app.use(express.json());
