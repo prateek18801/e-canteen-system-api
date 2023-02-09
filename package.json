@@ -1,0 +1,28 @@
+{
+  "name": "e-canteen-system-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r dotenv/config app.js",
+    "dev": "nodemon -r dotenv/config app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prateek18801/e-canteen-system-api.git"
+  },
+  "keywords": [],
+  "author": "prateek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prateek18801/e-canteen-system-api/issues"
+  },
+  "homepage": "https://github.com/prateek18801/e-canteen-system-api#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
