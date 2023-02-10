@@ -1,51 +1,19 @@
 const Product = require('../models/product');
 
-exports.getProduct = async (req, res, next) => {
-    const { id } = req.params;
-    try {
-        if (id) {
-            const product = await Product.findById(id).lean();
-            
-            if (!product) {
-                return res.status(400).json({
-                    ok: false,
-                    message: 'not found'
-                });
-            }
-
-            return res.status(200).json({
-                ok: true,
-                message: 'found',
-                data: product
-            });
-        }
-
-        const product = await Product.find().lean();
-
-        return res.status(200).json({
-            ok: true,
-            message: 'success',
-            data: product
-        });
-    } catch (err) {
-        next(err);
-    }
-}
-
 exports.postProduct = async (req, res, next) => {
-    const data = { ...req.body };
     const { id } = req.params;
+    const data = { ...req.body };
     try {
 
         if (id) {
-            const existing = await Product.findById(id);
-            for (key in data) existing[key] = data[key];
-            const saved = await existing.save();
+            const product = await Product.findById(id);
+            for (key in data) product[key] = data[key];
+            const updated = await product.save();
 
             return res.status(200).json({
                 ok: true,
                 message: 'updated',
-                data: saved
+                data: updated
             });
         }
 
@@ -83,10 +51,19 @@ exports.deleteProduct = async (req, res, next) => {
     }
 }
 
-exports.getAvailableProducts = async (req, res, next) => {
+exports.toggleAvailableProduct = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const product = await Product.findById(id);
+        product.available = !product.available;
+        const updated = await product.save();
 
-}
-
-exports.postAvailableProducts = async (req, res, next) => {
-    
+        return res.status(200).json({
+            ok: true,
+            message: 'updated',
+            data: updated
+        });
+    } catch (err) {
+        next(err);
+    }
 }
