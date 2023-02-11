@@ -35,13 +35,6 @@ exports.postSignup = async (req, res, next) => {
         email: req.body.email.toLowerCase()
     }
     try {
-        if (data.password !== data.confirm_password) {
-            return res.status(400).json({
-                ok: false,
-                message: 'passwords do not match',
-            });
-        }
-
         const saved = await new User(data).save();
 
         // generate authentication token
