@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
+    full_name: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -22,6 +26,7 @@ const UserSchema = new mongoose.Schema({
         default: 'user'
     },
     cart: [{
+        _id: false,
         product_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product'
