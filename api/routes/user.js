@@ -12,5 +12,8 @@ router.get('/v1/cart', authorization('user'), userController.getCart);
 router.post('/v1/cart', authorization('user'), userController.postCart);
 router.get('/v1/cart/add/:id', authorization('user'), userController.addToCart);
 
+// favourites routes
+router.get('/v1/favourites', authorization('user'), userController.getFavourites);
+router.get('/v1/favourites/add/:id', authorization('user'), userController.toggleFavourite);
 
 module.exports = router;
