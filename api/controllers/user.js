@@ -56,7 +56,8 @@ exports.getCart = async (req, res, next) => {
     try {
         // req.user.id = '63e7324607dd76d4bc12f9c2';
         user_id = '63e7324607dd76d4bc12f9c2';
-        const user = await User.findById(user_id).populate('cart');
+        const user = await User.findById(user_id).populate({ path: 'cart', populate: { path: 'product_id', model: 'Product' } });
+        
         return res.status(200).json({
             ok: true,
             message: 'found',
@@ -67,19 +68,22 @@ exports.getCart = async (req, res, next) => {
     }
 }
 
+exports.postCart = async (req, res, next) => {
+
+}
+
 exports.addToCart = async (req, res, next) => {
-    const id = req.params.id;
+    const { id } = req.params;
     try {
         user_id = '63e7324607dd76d4bc12f9c2';
         const user = await User.findById(user_id);
-        // user.updateCart(id);
 
+        // increment quantity or add product in cart
         const idx = user.cart.findIndex(el => el.product_id.toString() === id);
         if (idx > -1) {
             user.cart[idx].qty++;
         } else {
-            const data = { product_id: id, qty: 1 };
-            user.cart.push(data);
+            user.cart = [...user.cart, { product_id: id, qty: 1 }];
         }
 
         const updated = await user.save();
