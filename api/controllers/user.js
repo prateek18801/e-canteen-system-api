@@ -63,7 +63,21 @@ exports.getCart = async (req, res, next) => {
 }
 
 exports.postCart = async (req, res, next) => {
+    const data = req.body;
+    try {
+        const user = await User.findById(req.user._id);
+        user.cart = data;
+        const updated = await (await user.save()).populate({ path: 'cart', populate: { path: 'product_id', model: 'Product' } });
 
+        return res.status(200).json({
+            ok: true,
+            message: 'updated',
+            data: updated.cart
+        });
+
+    } catch (err) {
+        next(err);
+    }
 }
 
 exports.addToCart = async (req, res, next) => {
