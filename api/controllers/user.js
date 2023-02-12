@@ -107,6 +107,48 @@ exports.addToCart = async (req, res, next) => {
 }
 
 
+// favourites controllers
+
+exports.getFavourites = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).populate('favourites').lean();
+
+        return res.status(200).json({
+            ok: true,
+            message: 'success',
+            data: user.favourites
+        });
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.toggleFavourite = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findById(req.user._id);
+
+        // add to favourite or remove from favourites
+        const idx = user.favourites.findIndex(el => el.toString() === id);
+        if (idx > -1) {
+            user.favourites.splice(idx, 1);
+        } else {
+            user.favourites = [...user.favourites, id];
+        }
+
+        const updated = await (await user.save()).populate('favourites');
+
+        return res.status(200).json({
+            ok: true,
+            message: 'updated',
+            data: updated.favourites
+        });
+
+    } catch (err) {
+        next(err);
+    }
+}
 
 
 // transaction controllers
