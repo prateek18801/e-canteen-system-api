@@ -10,7 +10,7 @@ exports.postLogin = async (req, res, next) => {
             if (await user.match(password)) {
 
                 // generate authentication token
-                const token = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+                const token = jwt.sign({ _id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
                 
                 return res.status(200).json({
                     ok: true,
@@ -38,12 +38,11 @@ exports.postSignup = async (req, res, next) => {
         const saved = await new User(data).save();
 
         // generate authentication token
-        const token = jwt.sign({ email: saved.email, role: saved.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({ _id: saved._id, email: saved.email, role: saved.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
         
         return res.status(201).json({
             ok: true,
             message: 'created',
-            data: saved,
             token: token
         });
     } catch (err) {
