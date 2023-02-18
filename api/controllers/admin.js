@@ -55,6 +55,13 @@ exports.toggleAvailableProduct = async (req, res, next) => {
     const { id } = req.params;
     try {
         const product = await Product.findById(id);
+        if (!product) {
+            return res.status(400).json({
+                ok: false,
+                message: 'not found'
+            });
+        }
+
         product.available = !product.available;
         const updated = await product.save();
 
