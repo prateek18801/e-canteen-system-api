@@ -14,6 +14,8 @@ router.get('/v1/cart/add/:id', authorization('user'), userController.addToCart);
 
 // favourites routes
 router.get('/v1/favourites', authorization('user'), userController.getFavourites);
-router.get('/v1/favourites/add/:id', authorization('user'), userController.toggleFavourite);
+router.get('/v1/favourites/toggle/:id', authorization('user'), userController.toggleFavourite);
+
+
 
 module.exports = router;
