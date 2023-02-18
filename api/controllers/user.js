@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 const User = require('../models/user');
 
 // product controllers
@@ -53,7 +54,7 @@ exports.getCart = async (req, res, next) => {
 
         return res.status(200).json({
             ok: true,
-            message: 'found',
+            message: 'success',
             data: user.cart
         });
 
@@ -145,6 +146,58 @@ exports.toggleFavourite = async (req, res, next) => {
             data: updated.favourites
         });
 
+    } catch (err) {
+        next(err);
+    }
+}
+
+// order controllers
+
+exports.createOrder = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).populate({ path: 'cart', populate: { path: 'product_id', model: 'Product' } });
+
+        let amount = 0;
+        user.cart.forEach(item => amount += item.product_id.rate);
+
+        const order = await new Order({ user_id: user._id, products: user.cart, amount }).save();
+
+        return res.status(201).json({
+            ok: true,
+            message: 'created',
+            data: order
+        });
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.cancelOrder = async (req, res, next) => {
+    const { id } = req.params;
+    try {
+        const order = await Order.findById(id).lean();
+
+        if (!order) {
+            return res.status(400).json({
+                ok: false,
+                message: 'not found'
+            });
+        }
+
+        if (order.paid) {
+            return res.status(400).json({
+                ok: false,
+                message: 'already paid'
+            });
+        }
+        const deleted = await Order.findByIdAndDelete(id);
+
+        return res.status(200).json({
+            ok: true,
+            message: 'deleted',
+            data: deleted
+        });
     } catch (err) {
         next(err);
     }
