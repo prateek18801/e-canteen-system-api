@@ -20,5 +20,8 @@ router.get('/v1/favourites/toggle/:id', authorization('user'), userController.to
 router.get('/v1/order/create', authorization('user'), userController.createOrder);
 router.get('/v1/order/cancel/:id', authorization('user'), userController.cancelOrder);
 
+// transaction routes
+router.get('/v1/payment/:id', authorization('user'), userController.makePayment);
+router.post('/v1/txn-callback', authorization('user'), userController.handleCallback);
 
 module.exports = router;
