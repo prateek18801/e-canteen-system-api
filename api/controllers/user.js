@@ -158,7 +158,7 @@ exports.createOrder = async (req, res, next) => {
         const user = await User.findById(req.user._id).populate({ path: 'cart', populate: { path: 'product_id', model: 'Product' } });
 
         let amount = 0;
-        user.cart.forEach(item => amount += item.product_id.rate);
+        user.cart.forEach(item => amount += item.product_id.rate * item.qty);
 
         const order = await new Order({ user_id: user._id, products: user.cart, amount }).save();
 
