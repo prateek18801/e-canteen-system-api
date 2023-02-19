@@ -1,3 +1,4 @@
+const Order = require('../models/order');
 const Product = require('../models/product');
 
 exports.postProduct = async (req, res, next) => {
@@ -69,6 +70,21 @@ exports.toggleAvailableProduct = async (req, res, next) => {
             ok: true,
             message: 'updated',
             data: updated
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.getOrder = async (req, res, next) => {
+    const { status } = req.params;
+    try {
+        const orders = status ? await Order.find({ delivered: status, paid: true }).populate('user_id').populate({ path: 'products', populate: { path: 'product_id', model: 'Product' } }).sort({ createdAt: -1 }).lean()
+            : await Order.find({ paid: true }).populate('user_id', 'full_name email contact').populate({ path: 'products', populate: { path: 'product_id', model: 'Product' } }).sort({ createdAt: -1 }).lean();
+        return res.status(200).json({
+            ok: true,
+            message: 'success',
+            data: orders
         });
     } catch (err) {
         next(err);
